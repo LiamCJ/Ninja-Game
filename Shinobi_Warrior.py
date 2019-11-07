@@ -1,8 +1,8 @@
-from pygame import *
+from pygame import sprite, init, image, display, time, event, key, QUIT, K_a, K_s, K_d, K_w, K_j, K_k, K_l, K_i, K_UP, K_DOWN, K_LEFT, K_RIGHT
 
 init()
 
-bg = image.load('images/Backgrounds/Landscape.gif')
+bg = image.load('images/Backgrounds/bg_1.png')
 #dimension of window
 winWidth = 500
 winLength = 281
@@ -13,45 +13,37 @@ clock = time.Clock()
 
 run = True #when false SpaceInvaders will stop
 
-class Player():
+
+class Player(sprite.Sprite):
+
+    
     #Moving Right
     runR = (image.load('images/Ninja/R_run_1.png'),image.load('images/Ninja/R_run_2.png'),image.load('images/Ninja/R_run_3.png'),image.load('images/Ninja/R_run_4.png'),image.load('images/Ninja/R_run_5.png'),image.load('images/Ninja/R_run_6.png'))
     walkR = (image.load('images/Ninja/R_walk_1.png'),image.load('images/Ninja/R_walk_2.png'),image.load('images/Ninja/R_walk_3.png'),image.load('images/Ninja/R_walk_4.png'))
     ninR = (image.load('images/Ninja/R_idle_1.png'),image.load('images/Ninja/R_idle_2.png'))
     jumpR = (image.load('images/Ninja/R_jump.png'),image.load('images/Ninja/R_land.png'))
-    #Attacking Right
-    kAtckR = (image.load('images/Ninja/R_attack_1.png'),image.load('images/Ninja/R_attack_2.png'),image.load('images/Ninja/R_attack_4.png'),image.load('images/Ninja/R_attack_6.png'))
-    iAtckR = (image.load('images/Ninja/R_attack_1.png'),image.load('images/Ninja/R_attack_2.png'),image.load('images/Ninja/R_attack_5.png'))
-    lAtckR = (image.load('images/Ninja/R_attack_1.png'),image.load('images/Ninja/R_attack_2.png'),image.load('images/Ninja/R_attack_3.png'))
+
     #Moving Left
     runL = (image.load('images/Ninja/L_run_1.png'),image.load('images/Ninja/L_run_2.png'),image.load('images/Ninja/L_run_3.png'),image.load('images/Ninja/L_run_4.png'),image.load('images/Ninja/L_run_5.png'),image.load('images/Ninja/L_run_6.png'))
     walkL = (image.load('images/Ninja/L_walk_1.png'),image.load('images/Ninja/L_walk_2.png'),image.load('images/Ninja/L_walk_3.png'),image.load('images/Ninja/L_walk_4.png'))
     ninL = (image.load('images/Ninja/L_idle_1.png'),image.load('images/Ninja/L_idle_2.png'))
-    jumpL = (image.load('images/Ninja/L_jump.png'),image.load('images/Ninja/L_land.png'))
-    #Attacking Left
-    kAtckL = (image.load('images/Ninja/L_attack_1.png'),image.load('images/Ninja/L_attack_2.png'),image.load('images/Ninja/L_attack_4.png'),image.load('images/Ninja/L_attack_6.png'))
-    iAtckL = (image.load('images/Ninja/L_attack_1.png'),image.load('images/Ninja/L_attack_2.png'),image.load('images/Ninja/L_attack_5.png'))
-    lAtckL = (image.load('images/Ninja/L_attack_1.png'),image.load('images/Ninja/L_attack_2.png'),image.load('images/Ninja/L_attack_3.png'))
-    
+    jumpL = (image.load('images/Ninja/L_jump.png'),image.load('images/Ninja/L_land.png'))   
+
     def __init__(self, x, y, width, height):
+        sprite.Sprite.__init__(self)
         #co-ordinates of player
         self.x = x
         self.y = y
         #dimension of player
         self.width = width
         self.height = height
-        self.atckUC = 0  
         self.jumpC = 7
-        self.atckC = 0
         self.walkC = 0
         self.runC = 0 
         self.idle = 0     
         self.vel = 5 #velocity of player
         self.isDownR = False
         self.isDownL = False
-        self.atckIsK = False
-        self.atckIsI = False
-        self.atckIsL = False
         self.isRunR = False
         self.isRunL = False
         self.isJump = False
@@ -63,7 +55,7 @@ class Player():
          
 
     def draw(self, win):
-        win.blit(bg, (0,0)) 
+#         win.blit(bg, (0,0)) 
 
         #===========
         #ACTIONS
@@ -98,38 +90,8 @@ class Player():
 
                 elif self.isAtck:
 
-                    if self.isR or self.isRunR:
-                        if self.atckIsK:
-                            win.blit(self.kAtckR[self.atckC//2],(self.x,self.y))
-                            self.atckC += 1
-                            if self.atckC >=7:
-                                self.atckC = 0
-                        elif self.atckIsI:
-                            win.blit(self.iAtckR[self.atckUC//2],(self.x,self.y))
-                            self.atckUC += 1
-                            if self.atckUC >=6:
-                                self.atckUC = 0
-                        elif self.atckIsL:
-                            win.blit(self.lAtckR[self.atckUC//2],(self.x,self.y))
-                            self.atckUC += 1
-                            if self.atckUC >=6:
-                                self.atckUC = 0
-                    elif self.isL or self.isRunL:
-                        if self.atckIsK:
-                            win.blit(self.kAtckL[self.atckC//3],(self.x,self.y))
-                            self.atckC += 1
-                            if self.atckC >=12:
-                                self.atckC = 0
-                        elif self.atckIsI:
-                            win.blit(self.iAtckL[self.atckUC//3],(self.x,self.y))
-                            self.atckUC += 1
-                            if self.atckUC >=8:
-                                self.atckUC = 0
-                        elif self.atckIsL:
-                            win.blit(self.lAtckL[self.atckUC//3],(self.x,self.y))
-                            self.atckUC += 1
-                            if self.atckUC >=8:
-                                self.atckUC = 0
+                    sword.draw(win)
+
             elif self.isJump:
 
                 if self.isR or self.isRunR:               
@@ -151,12 +113,114 @@ class Player():
 
             if self.idle >= 7:
                 self.idle = 0
-                
-        display.update()           
-    
-ninja = Player(60, 160, 64, 64)   
+        
 
-while run:        
+        display.update()  
+  
+
+class Attack(sprite.Sprite):
+
+
+    #Attacking Right
+    kAtckR = (image.load('images/Ninja/R_attack_1.png'),image.load('images/Ninja/R_attack_2.png'),image.load('images/Ninja/R_attack_4.png'),image.load('images/Ninja/R_attack_6.png'))
+    iAtckR = (image.load('images/Ninja/R_attack_1.png'),image.load('images/Ninja/R_attack_2.png'),image.load('images/Ninja/R_attack_5.png'))
+    lAtckR = (image.load('images/Ninja/R_attack_1.png'),image.load('images/Ninja/R_attack_2.png'),image.load('images/Ninja/R_attack_3.png'))
+ 
+
+    def __init__(self):
+        sprite.Sprite.__init__(self)
+        self.x =  ninja.x
+        self.y = ninja.y
+        self.width = ninja.width
+        self.height = ninja.height
+        self.atckUC = 0
+        self.atckC = 0  
+        self.atckIsK = False
+        self.atckIsI = False
+        self.atckIsL = False
+
+
+    def draw(self, win):
+
+        #===========
+        #ACTIONS
+        #===========
+        
+        if self.atckIsK:
+                
+            win.blit(self.kAtckR[self.atckC//2],(ninja.x,ninja.y))
+            
+            self.atckC += 1
+            
+            if self.atckC >= 7:
+                self.atckC = 0
+                
+        elif self.atckIsI:
+
+            win.blit(self.iAtckR[self.atckUC//2],(ninja.x,ninja.y))
+            
+            self.atckUC += 1
+           
+            if self.atckUC >= 6:
+                self.atckUC = 0
+        
+        elif self.atckIsL:
+        
+            win.blit(self.lAtckR[self.atckUC//2],(ninja.x,ninja.y))
+            
+            self.atckUC += 1
+           
+            if self.atckUC >= 6:
+                self.atckUC = 0
+                 
+
+# class Enemies(sprite.Group):
+#     
+#     
+#     enemy = (image.load('images/Enemys/enemy_1.png'),image.load('images/Enemys/enemy_2.png'),image.load('images/Enemys/enemy_3.png'),image.load('images/Enemys/enemy_4.png'))
+#     
+#     def __init__(self,x, y, width, height):
+#         sprite.Sprite.__init__(self)
+#         self.x = x
+#         self.y = y
+#         self.width = width
+#         self.height = height
+#         self.idleC = 0
+#         
+#     def draw(self, win):
+#         win.blit(self.enemy[self.idleC//3],(self.x,self.y))
+#         self.idleC += 1
+#         if self.idleC >= 12:
+#             self.idleC = 0
+    
+    
+    
+class Enemy(sprite.Sprite):
+    
+    
+    enemy = (image.load('images/Enemys/enemy_1.png'),image.load('images/Enemys/enemy_2.png'),image.load('images/Enemys/enemy_3.png'),image.load('images/Enemys/enemy_4.png'))
+    
+    def __init__(self,x, y, width, height):
+        sprite.Sprite.__init__(self)
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.idleC = 0
+        
+    def draw(self, win):
+        win.blit(self.enemy[self.idleC//3],(self.x,self.y))
+        self.idleC += 1
+        if self.idleC >= 12:
+            self.idleC = 0
+
+
+ninja = Player(0, 155, 64, 64) 
+sword = Attack()  
+red = Enemy(410, 155, 27, 21)
+# Enemies.add(red)
+
+while run:       
     time.delay(100) 
     #checks for input
     for e in event.get():
@@ -165,7 +229,10 @@ while run:
 
     #array of keys *each key is assigned a number*        
     keys = key.get_pressed()
-
+    
+#     if sprite.spritecollide(ninja, red, True, True):
+#         print("KIll")
+    
     #============
     #KEYS INPUT
     #============
@@ -178,8 +245,8 @@ while run:
         ninja.isRunL = False
         ninja.isRunR = False
         ninja.isAtck = False
-        ninja.atckC = 0
-        ninja.atckUC = 0
+        sword.atckC = 0
+        sword.atckUC = 0
     elif (keys[K_d] or keys[K_RIGHT]) and ninja.x < winWidth - ninja.width:
         ninja.x += ninja.vel
         ninja.isR = True
@@ -188,8 +255,8 @@ while run:
         ninja.isRunL = False
         ninja.isRunR = False
         ninja.isAtck = False
-        ninja.atckC = 0
-        ninja.atckUC = 0
+        sword.atckC = 0
+        sword.atckUC = 0
     elif (keys[K_w] or keys[K_UP]) and ninja.x > ninja.vel:
         ninja.x -= ninja.vel * 2
         ninja.isRunL = True
@@ -198,8 +265,8 @@ while run:
         ninja.isR = False
         ninja.isL = False
         ninja.isAtck = False
-        ninja.atckC = 0
-        ninja.atckUC = 0
+        sword.atckC = 0
+        sword.atckUC = 0
     elif (keys[K_s] or keys[K_DOWN]) and ninja.x < winWidth - ninja.width:
         ninja.x += ninja.vel * 2
         ninja.isRunR = True
@@ -208,25 +275,25 @@ while run:
         ninja.isR = False
         ninja.isL = False 
         ninja.isAtck = False
-        ninja.atckC = 0
-        ninja.atckUC = 0
+        sword.atckC = 0
+        sword.atckUC = 0
     elif keys[K_k]:
         ninja.isAtck = True  
-        ninja.atckIsK = True 
-        ninja.atckIsL = False
-        ninja.atckIsI = False
+        sword.atckIsK = True 
+        sword.atckIsL = False
+        sword.atckIsI = False
         ninja.isIdle = False 
     elif keys[K_i]:
         ninja.isAtck = True 
-        ninja.atckIsI = True
-        ninja.atckIsK = False  
-        ninja.atckIsL = False 
+        sword.atckIsI = True
+        sword.atckIsK = False  
+        sword.atckIsL = False 
         ninja.isIdle = False 
     elif keys[K_l]:
         ninja.isAtck = True 
-        ninja.atckIsL = True 
-        ninja.atckIsI = False
-        ninja.atckIsK = False  
+        sword.atckIsL = True 
+        sword.atckIsI = False
+        sword.atckIsK = False  
         ninja.isIdle = False         
     else:
         ninja.idle += 1
@@ -243,8 +310,8 @@ while run:
             ninja.isIdle = False
             ninja.walkC = 0
             ninja.runC = 0
-            ninja.atckC = 0
-            ninja.atckUC = 0
+            sword.atckC = 0
+            sword.atckUC = 0
     else:
         if ninja.jumpC >= -7:
             n = 1
@@ -271,8 +338,10 @@ while run:
             ninja.isUpR = False
             ninja.isDownL = False
             ninja.isUpL = False
-            
+    
+    win.blit(bg, (0,0))  
+    red.draw(win)       
     ninja.draw(win)
-        
+
 quit()
                 
