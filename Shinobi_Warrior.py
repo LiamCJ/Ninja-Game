@@ -1,5 +1,6 @@
 import pygame as pg
-import random
+# import random
+import math
 vector = pg.math.Vector2
 
 
@@ -40,9 +41,6 @@ class Program:
         self.health_bar.add(Health(30, 10))
         self.health_bar.add(Health(60, 10))
         self.health_bar.add(Health(90, 10))
-        self.health_bar.add(Health(120, 10))
-        self.health_bar.add(Health(150, 10))
-        self.health_bar.add(Health(180, 10))
         
 #         for k in (1,3): 
         self.kunais.add(Kunai())
@@ -81,24 +79,31 @@ class Program:
                     
                 for kunai in  self.kunais:
                     now = pg.time.get_ticks()
-                    if now - self.last_update > 2500 or kunai_hit:
-                        self.last_update = now
-                        kunai.pos = vector(self.red.rect.center)
-                        self.kunais.draw(self.screen)
-                        self.kunais.update()
+                    dist = math.hypot(self.ninja.pos.x - self.red.pos.x, self.ninja.pos.y - self.red.pos.y)
                     
-                    if kunai_hit:
-                        
-                        self.health_bar.remove(self.health_bar.sprites()[-1])
-                        self.kunais.remove(kunai)
-                        
-                        if len(self.health_bar) >= 1 :
-                            self.kunais.add(Kunai())
-                        elif len(self.health_bar) <= 0:
-                            self.kunais.empty()
-                            self.ninja.isDead = True
-                            self.playing = False
-                            
+                    if dist >= 100:
+                        if now - self.last_update > 2500 or kunai_hit:
+                            self.last_update = now
+                            kunai.pos = vector(self.red.rect.center)
+                            self.kunais.draw(self.screen)
+                            self.kunais.update()
+                    
+                        if kunai_hit:
+                            #if not self.ninja.isAtck:
+                            #else:
+                                #self.kunais.remove(kunai)
+                                #self.ninja.isAtck = False
+                            self.kunais.remove(kunai)
+                            self.health_bar.remove(self.health_bar.sprites()[-1])
+                                
+                            if len(self.health_bar) >= 1 :
+                                self.kunais.add(Kunai())
+                            elif len(self.health_bar) <= 0:
+                                self.kunais.empty()
+                                self.ninja.isDead = True
+                                self.playing = False
+                    
+                               
         
     def events(self):
         #Game loop -events
@@ -110,7 +115,6 @@ class Program:
                 if self.playing:
                     self.playing = False
                 self.running = False
-                self.start = False
     
     
     def draw(self):
@@ -301,14 +305,18 @@ class Player(pg.sprite.Sprite):
             
             #changing screens
             if self.pos.x > g.winWidth:
-                self.pos.x = 0   
+                self.pos.x = 40   
                 g.bg_no += 1
                 g.red.isDead = False
+                
+                for  kunai in g.kunais:
+                    kunai.pos = g.red.pos
+                     
                 if g.bg_no >= 5:
                     g.bg_no = 1
                     
-            if self.pos.x <= 20:
-                self.pos.x = 30
+            if self.pos.x <= 10:
+                self.pos.x = 40
                 self.isR = True
                 self.isL = False
              
@@ -432,6 +440,7 @@ class Player(pg.sprite.Sprite):
             self.dthC += 1 * 2
             if self.dthC >= 16:
                 self.dthC = 0
+
  
     def attack(self):
         #Attacking Right
@@ -560,7 +569,8 @@ while g.running:
 pg.quit()
 
 """
-Make kunai stop for periods then continue
-Make only throw enemies so that user has to dodge them and their is no confusion in collision
+notes:
+add hi-score
+make ninja be able to hit the kunai back
 remove True & False conditions, and make each animation a function
 """
