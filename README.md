@@ -11,6 +11,3 @@ Controls:
  - Medium Attack: Hold I
  - Strong Attack: Hold L
 
-Requirements:
- - Python 3.x
- - PyGame
