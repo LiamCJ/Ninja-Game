@@ -7,6 +7,7 @@ Controls:
  - Sprint Forward: S or Down Arrow Key
  - Sprint Back: W or Up Arrow Key
  - Jump: J
- - Light Attack: K
- - Medium Attack: I
- - Strong Attack: L
+ - Light Attack: Hold K
+ - Medium Attack: Hold I
+ - Strong Attack: Hold L
+
