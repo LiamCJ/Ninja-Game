@@ -23,7 +23,8 @@ class Program:
         self.bg_no = 1
         self.score = 0
         self.last_update = 0
-        self.font= pg.font.Font('fonts/Bank_Gothic_Medium_BT.ttf', 20)
+        self.font = pg.font.Font('fonts/Bank_Gothic_Medium_BT.ttf', 20)
+        self.font2 = pg.font.Font('fonts/Bank_Gothic_Medium_BT.ttf', 15)
     
     
     def new(self):
@@ -47,6 +48,17 @@ class Program:
         
         self.game_run()
     
+
+    def high_score(self):
+        score_file = open('high_score.txt','r+',encoding = 'utf-8-sig')
+        try:
+            self.h_score = int(score_file.read())
+        except:
+            self.h_score = 0
+            
+        score_file.close()
+        score_file.closed
+
     
     def game_run(self):
         #game loop
@@ -103,8 +115,7 @@ class Program:
                                 self.ninja.isDead = True
                                 self.playing = False
                     
-                               
-        
+                                   
     def events(self):
         #Game loop -events
         #array of keys *each key is assigned a number*        
@@ -134,24 +145,37 @@ class Program:
     
     
     def show_start_screen(self):
-            self.opn = pg.image.load('images/Backgrounds/openingScene.png').convert_alpha()
-            self.screen.blit(self.opn, (0,0)) 
-            self.ctrls = self.font.render('Press Tab For Controls', True, (0, 0, 0), (255, 255, 255))
-            self.play = self.font.render('Press Space To Play', True, (0, 0, 0), (255, 255, 255))
-            self.screen.blit(self.ctrls, (100,150))
-            self.screen.blit(self.play, (120,200))          
-            pg.display.flip()    
-            self.enter_key()
+        
+        self.high_score()
+        self.opn = pg.image.load('images/Backgrounds/openingScene.png').convert_alpha()
+        self.screen.blit(self.opn, (0,0)) 
+        self.screen.blit(self.font.render('Press Tab For Controls', True, (0, 0, 0), (255, 255, 255)), (100,150))
+        self.screen.blit(self.font.render('Press Space To Play', True, (0, 0, 0), (255, 255, 255)), (120,200))  
+        self.screen.blit(self.font2.render('High Score: {}'.format(self.h_score), True, (0, 0, 0), (255, 255, 255)), (350,0))        
+        pg.display.flip()    
+        self.enter_key()
             
                
     def game_over(self):
         # game over/continue
         self.gameOver = pg.image.load('images/Backgrounds/gameOver.png').convert_alpha()
         self.screen.blit(self.gameOver, (0,0)) 
-        self.ctrls = self.font.render('Press Tab For Controls', True, (0, 0, 0), (255, 255, 255))
-        self.play = self.font.render('Press Space To Play', True, (0, 0, 0), (255, 255, 255))
-        self.screen.blit(self.ctrls, (100,150))
-        self.screen.blit(self.play, (120,200))           
+        self.screen.blit(self.font.render('Press Tab For Controls', True, (0, 0, 0), (255, 255, 255)), (100,150))
+        self.screen.blit(self.font.render('Press Space To Play', True, (0, 0, 0), (255, 255, 255)), (120,200)) 
+        
+        if self.score > self.h_score:
+            self.h_score = self.score
+            self.screen.blit(self.font.render('New High Score: {}'.format(self.h_score), True, (0, 0, 0), (255, 255, 255)), (140,250)) 
+            score_file = open('high_score.txt','r+',encoding = 'utf-8-sig')
+            
+            score_file.write(str(self.h_score))
+            
+            score_file.close()
+            score_file.closed
+            
+        self.screen.blit(self.font2.render('High Score: {}'.format(self.h_score), True, (0, 0, 0), (255, 255, 255)), (350,0))         
+ 
+
         pg.display.flip()    
         self.enter_key()
    
@@ -168,6 +192,7 @@ class Program:
                 if e.type == pg.KEYDOWN:
                     if e.key == pg.K_SPACE:
                         waiting = False 
+                        self.score = 0
                     if e.key == pg.K_TAB:
                         cntrls = not cntrls
                         self.cntrls = pg.image.load('images/Backgrounds/controls.png').convert_alpha()
@@ -243,8 +268,8 @@ class Player(pg.sprite.Sprite):
             elif g.keys[pg.K_d] or g.keys[pg.K_RIGHT]:
                 self.acc.x = self.speed
                 self.isR = True
-                self.isIdle = False
                 self.isL = False
+                self.isIdle = False
                 self.isRunL = False
                 self.isRunR = False
                 self.isAtck = False
@@ -252,21 +277,21 @@ class Player(pg.sprite.Sprite):
                 self.atckUC = 0
             elif (g.keys[pg.K_w] or g.keys[pg.K_UP]):
                 self.acc.x = -self.speed * 2
+                self.isR = False
+                self.isL = False
                 self.isRunL = True
                 self.isIdle = False
                 self.isRunR = False
-                self.isR = False
-                self.isL = False
                 self.isAtck = False
                 self.atckC = 0
                 self.atckUC = 0
             elif (g.keys[pg.K_s] or g.keys[pg.K_DOWN]):
                 self.acc.x = self.speed * 2
+                self.isR = False
+                self.isL = False 
                 self.isRunR = True
                 self.isIdle = False
                 self.isRunL = False
-                self.isR = False
-                self.isL = False 
                 self.isAtck = False
                 self.atckC = 0
                 self.atckUC = 0
@@ -475,22 +500,6 @@ class Player(pg.sprite.Sprite):
             self.atckUC += 1
             if self.atckUC >= 3:
                 self.atckUC = 0
-  
-   
-    def idle(self):
-        pass
-    
-    
-    def walk(self):
-        pass
-    
-    
-    def run(self):
-        pass
-    
-    
-    def jump(self):
-        pass
              
         
 class Enemy(pg.sprite.Sprite):    
@@ -570,7 +579,5 @@ pg.quit()
 
 """
 notes:
-add hi-score
 make ninja be able to hit the kunai back
-remove True & False conditions, and make each animation a function
 """
