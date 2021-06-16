@@ -1,16 +1,13 @@
 import pygame as pg
-# import random
 import math
 vector = pg.math.Vector2
 
 
 class Program:
-
-
     def __init__(self):
     #initialize game window, etc
         pg.init()
-        pg.mixer.init()
+        # pg.mixer.init()
         #dimension of window
         self.winWidth = 500
         self.winLength = 281
@@ -18,13 +15,13 @@ class Program:
         self.screen = pg.display.set_mode(size=(self.winWidth, self.winLength))
         pg.display.set_caption("Shinobi Warrior")
         self.clock = pg.time.Clock()
-        self.running = True
+        self.last_update = 0
         self.playing = False
+        self.running = True
         self.bg_no = 1
         self.score = 0
-        self.last_update = 0
-        self.font = pg.font.Font('fonts/Bank_Gothic_Medium_BT.ttf', 20)
         self.font2 = pg.font.Font('fonts/Bank_Gothic_Medium_BT.ttf', 15)
+        self.font = pg.font.Font('fonts/Bank_Gothic_Medium_BT.ttf', 20)
     
     
     def new(self):
@@ -43,7 +40,6 @@ class Program:
         self.health_bar.add(Health(60, 10))
         self.health_bar.add(Health(90, 10))
         
-#         for k in (1,3): 
         self.kunais.add(Kunai())
         
         self.game_run()
